@@ -11,7 +11,7 @@ def find_distance(route):
     total_distance = 0.00
     gmaps = googlemaps.Client(api_key)
     for i in range(len(route)):
-        route[i] = route[i] + ' Bus Stop, Dhaka'
+        route[i] = route[i] + ' Bus Stop, Mysore'
     for i in range(len(route) - 1):
         ori = route[i]
         des = route[i + 1]
