@@ -7,7 +7,6 @@
   A user friendly web based bus transport system created using Python( Django )<br>
   Search & Find all the local buses of [Mysore City](https://en.wikipedia.org/wiki/Mysore) conveniently.
   
-[![IMAGE ALT TEXT HERE](https://raw.githubusercontent.com/shahriarshafin/smart-transport-system/main/static/accounts/assets/img/youtube.jpg)](https://youtu.be/250wrQvzD6Y)
 
 ## Features:
 - Local Bus route
