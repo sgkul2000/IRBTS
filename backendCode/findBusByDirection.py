@@ -15,7 +15,7 @@ def find_distance(route):
     for i in range(len(route) - 1):
         ori = route[i]
         des = route[i + 1]
-        distance_raw = gmaps.distance_matrix(ori, des, region='BD')
+        distance_raw = gmaps.distance_matrix(ori, des, region='IN')
         distance_in_string = distance_raw['rows'][0]['elements'][0]['distance']['text']
         if distance_in_string[-1] == 'm' and distance_in_string[-2] == ' ':
             distance = distance_in_string[:-2]

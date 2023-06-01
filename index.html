@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Websocket test</title>
+</head>
+
+<body>
+    <h1>This is to test the websocket</h1>
+    <button id="test-button">Test</button>
+    <script>
+        const user_username = "sgkul2000"
+        document.getElementById('test-button').addEventListener("click", () => {
+            const message = "Hey There!"
+            Socket.send(JSON.stringify({
+                'message': message,
+                'username': user_username,
+            }));
+            messageInputDom.value = '';
+        })
+
+        const boxName = "someName"
+        // console.log('ws://' + window.location.host + '/ws/loc/' + boxName + '/')
+
+        const Socket = new WebSocket(
+            "ws://127.0.0.1:8000/ws/loc/someName/"
+        );
+
+        chatSocket.onmessage = (e) => {
+            const data = JSON.parse(e.data);
+            console.log(data)
+        }
+    </script>
+</body>
+
+</html>

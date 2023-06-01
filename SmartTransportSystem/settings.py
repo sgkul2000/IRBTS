@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'smartTracking',
     'accounts',
     'home_page',
+    'channels'
 ]
 
 MIDDLEWARE = [
@@ -72,6 +73,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'SmartTransportSystem.wsgi.application'
+
+# required for websocket integration
+ASGI_APPLICATION = 'SmartTransportSystem.asgi.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': "channels.layers.InMemoryChannelLayer"
+        }
+    }
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases

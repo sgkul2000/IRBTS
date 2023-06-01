@@ -26,7 +26,7 @@ def search_nearby_places(lat, lng):
     #     json.dump(r2.json(), file)
     nearby_places_list = []
     for i in range(len(r2.json()['results'])):
-        address = r2.json()['results'][i]['name'] + ', ' + r2.json()['results'][i]['vicinity'] + ', Bangladesh'
+        address = r2.json()['results'][i]['name'] + ', ' + r2.json()['results'][i]['vicinity'] + ', India'
         nearby_places_list.append(address)
     # print(nearby_places_list)
     l = list(dict.fromkeys(nearby_places_list))

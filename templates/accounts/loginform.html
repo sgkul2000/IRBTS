@@ -22,7 +22,7 @@
 <nav class="navbar">
    <div class="brand-title">
       <a href="{% url 'home' %}" class="mr-auto">
-         <img src="{% static 'accounts/assets/img/logo.png' %}" width="50px" height="" alt="" class="img-fluid">
+         <img src="{% static 'accounts/assets/img/logo.png' %}" width="150px" height="" alt="" class="img-fluid">
       </a>
    </div>
    <a href="#" class="toggle-button">
@@ -64,7 +64,7 @@
             <a href="#" class="logo">STS <span>.</span></a>
 
             <div class="heading">
-               <h1><img src="{% static 'accounts/assets/img/logo.png' %}" width="150px" height="" alt="" class="img-fluid"></h1>
+               <h1><img src="{% static 'accounts/assets/img/logo.png' %}" width="250px" height="" alt="" class="img-fluid"></h1>
                <p>Your Transportation Partner</p>
             </div>
 
@@ -87,7 +87,7 @@
                   {% endif %}
                   <!-- if Not Found  -->
                   <div class="form-group">
-                     <label for="loginemail">Email or user_name</label>
+                     <label for="loginemail">Driver email</label>
                      <input type="text" name="loginemail" id="loginemail" value="{{ value.user_name }}" required>
                   </div>
 
