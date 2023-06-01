@@ -11,7 +11,7 @@ api_key = config('KEY2')
 
 def geocoding_from_address(address):
     endpoint = "https://maps.googleapis.com/maps/api/geocode/json"
-    params = {"address": address, 'region': '.in', "key": api_key, }
+    params = {"address": address + ", Mysore" if "mysore" not in address.lower() else address, 'region': '.in', "key": api_key, }
     url_params = urlencode(params)
 
     url = f"{endpoint}?{url_params}"

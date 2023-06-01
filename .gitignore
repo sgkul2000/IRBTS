@@ -4,3 +4,5 @@ venv/
 .env
 smart-transport-system/
 smart-transport-system
+__pycache__/
+*.py[cod]
