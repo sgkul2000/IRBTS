@@ -160,8 +160,7 @@ def allbuses(request):
     buses = BusInformation.objects.all()
     buses_list = []
     for bus in buses:
-        ssource_destination = str(bus.bus_sourcetodestination)
-        start, end = ssource_destination.split(sep='-', maxsplit=1)
+        start, end = str(bus.bus_source), str(bus.bus_destination)
         routes = bus.route_id.routes
         routes = routes.split(sep=',')
         design = str(routes[0])

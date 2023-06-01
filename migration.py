@@ -2,8 +2,10 @@ from orm import Model, Database
 from urllib.parse import urlencode
 import requests
 from decouple import config
+from random import randint
 
 api_key = config('KEY2')
+
 
 class home_page_route(Model):
     route_id = str
@@ -15,6 +17,25 @@ class home_page_route(Model):
 
     def __str__(self):
         return self.route_id + "<->" + self.routes
+
+
+class home_page_businformation(Model):
+    bus_id = int
+    bus_name = str
+    bus_source = str
+    bus_destination = str
+    bus_viaroad = str
+    bus_type = str
+    route_id_id = str
+
+    def __init__(self, bus_id: int, bus_name: str, bus_source: str, bus_destination: str, bus_via_road: str, bus_type: str, route_id: str):
+        self.bus_id = bus_id
+        self.bus_name = bus_name
+        self.bus_source = bus_source
+        self.bus_destination = bus_destination
+        self.bus_viaroad = bus_via_road
+        self.bus_type = bus_type
+        self.route_id_id = route_id
 
 
 class home_page_stops(Model):
@@ -42,8 +63,11 @@ class home_page_stops(Model):
 db = Database("../IRBTS/db.sqlite3")
 home_page_route.db = db
 home_page_stops.db = db
+home_page_businformation.db = db
 
 routes = []
+
+alphas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 with open("route_raw_data.txt", "r") as raw_data:
     file_data = raw_data.readlines()
@@ -53,6 +77,17 @@ with open("route_raw_data.txt", "r") as raw_data:
             col = ["-".join([col[0], col[1]]), col[2]]
         clean = ",".join(list(map(lambda x: x.strip(), col[1].split(","))))
         route = home_page_route(col[0], clean)
+        start, dest = route.routes.split(',')[0], route.routes.split(',')[-1]
+        bus = home_page_businformation(
+            randint(1000, 10000),
+            (alphas[randint(0, 25)] + str(randint(10, 150))),
+            start,
+            dest,
+            'somewhere',
+            'nan',
+            route.route_id
+        )
+        bus.save()
         routes.append(route)
         route.save()
     db.commit()

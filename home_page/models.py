@@ -11,7 +11,8 @@ class Route(models.Model):
 class BusInformation(models.Model):
     bus_id = models.AutoField(primary_key=True)  # auto generated
     bus_name = models.CharField(max_length=255)  # bus name
-    bus_sourcetodestination = models.CharField(max_length=80)  # Source to destination
+    bus_source = models.CharField(max_length=80)  # Source to destination
+    bus_destination = models.CharField(max_length=80)
     bus_viaroad = models.TextField()  # for regular expression operation
     bus_type = models.CharField(max_length=15)  # bus type
     route_id = models.ForeignKey('Route', on_delete=models.CASCADE)  # added foreignKey from Route Table
