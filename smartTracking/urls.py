@@ -11,4 +11,5 @@ urlpatterns = [
     path('findspecificbus/', views.findspecificbus, name='findspecificbus'),
     path('allbuses/', views.allbuses, name='allbuses'),
     path('driver-portal/', views.driverPortal, name='driverPortal'),
+    path('stops/', views.getStops, name='stops'),
 ]

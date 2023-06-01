@@ -1,10 +1,12 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from backendCode.geocoding import reverse_geocoding, geocoding_from_address
 from backendCode.nearbyplaces import search_nearby_places
-from home_page.models import BusInformation
+from home_page.models import BusInformation, Stops
 from backendCode.findBusByDirection import find_distance
 from decouple import config
+from json import loads
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 
@@ -106,8 +108,7 @@ def findspecificbus(request):
     try:
         buses = BusInformation.objects.filter(bus_name__iexact=bus_name_from_user)
         bus = buses[0]
-        ssource_destination = str(bus.bus_sourcetodestination)
-        start, end = ssource_destination.split(sep='-', maxsplit=1)
+        start, end = bus.bus_source, bus.bus_destination
         routes = bus.route_id.routes
         routes = routes.split(sep=',')
         list_route = []
@@ -117,13 +118,17 @@ def findspecificbus(request):
             else:
                 temp = (routes[i], routes[i + 1])
             list_route.append(temp)
+
+        text = config('KEY2')
+        mapURL = f"https://maps.googleapis.com/maps/api/js?key={text}&callback=initMap&libraries=&v=weekly"
         data = {
             'check': 0,
             'bus_id': bus.bus_id,
             'bus_name': bus.bus_name,
             'start': start,
             'end': end,
-            'routes': list_route
+            'routes': list_route,
+            'mapURL': mapURL
         }
         return render(request, 'smartTracking/findspecificbus.html', data)
 
@@ -133,27 +138,6 @@ def findspecificbus(request):
             "error": bus_name_from_user
         }
         return render(request, 'smartTracking/findspecificbus.html', data)
-
-        # ssource_destination = str(bus.bus_sourcetodestination)
-        # start, end = ssource_destination.split(sep='-', maxsplit=1)
-        # routes = bus.route_id.routes
-        # routes = routes.split(sep=',')
-        # list_route = []
-        # for i in range(0, len(routes), 2):
-        #     if i + 1 == len(routes):
-        #         temp = (routes[i], None)
-        #     else:
-        #         temp = (routes[i], routes[i + 1])
-        #     list_route.append(temp)
-        # data = {
-        #     'check': 0,
-        #     'bus_id': bus.bus_id,
-        #     'bus_name': bus.bus_name,
-        #     'start': start,
-        #     'end': end,
-        #     'routes': list_route
-        # }
-        # return render(request, 'smartTracking/findspecificbus.html', data)
 
 
 def allbuses(request):
@@ -180,11 +164,26 @@ def allbuses(request):
     # print(routes)
     return render(request, 'smartTracking/allbuses.html', contex)
 
-# urls of smarttracking apps
-# {% url 'searchnearby'%}
-# {% url 'finddirection'%}
-# {% url 'findspecificbus'%}
-# {% url 'allbuses'%}
-
 def driverPortal(request):
     return render(request, 'smartTracking/driverPortal.html', {})
+
+@csrf_exempt
+def getStops(request):
+    body_unicode = request.body.decode('utf-8')
+    body = loads(body_unicode)
+    bus_from_user = str(body.get('bus_name'))
+    buses = BusInformation.objects.filter(bus_name__iexact=bus_from_user)
+    print(body)
+    bus = buses[0]
+    routes = bus.route_id.routes
+    routes = routes.split(sep=',')
+    stops = []
+    for route in routes:
+        stop = Stops.objects.filter(stop_name=route.strip())[0]
+        stops.append({
+            "stop_name": stop.stop_name,
+            "lat": stop.stop_lat,
+            "long": stop.stop_lon
+        })
+    print(stops)
+    return JsonResponse(stops, safe=False)
