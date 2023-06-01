@@ -187,3 +187,6 @@ def allbuses(request):
 # {% url 'finddirection'%}
 # {% url 'findspecificbus'%}
 # {% url 'allbuses'%}
+
+def driverPortal(request):
+    return render(request, 'smartTracking/driverPortal.html', {})

@@ -10,4 +10,5 @@ urlpatterns = [
     path('finddirection/', views.finddirection, name='finddirection'),
     path('findspecificbus/', views.findspecificbus, name='findspecificbus'),
     path('allbuses/', views.allbuses, name='allbuses'),
+    path('driver-portal/', views.driverPortal, name='driverPortal'),
 ]

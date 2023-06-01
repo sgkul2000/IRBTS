@@ -3,5 +3,5 @@ from django.urls import re_path
 from . import socket
 
 websocket_urlpatterns = [
-    re_path(r"^ws/chat/$", socket.ChatConsumer.as_asgi()),
+    re_path(r"^ws/track/(?P<bus_no>\w+)/$", socket.TrackingConsumer.as_asgi()),
 ]
