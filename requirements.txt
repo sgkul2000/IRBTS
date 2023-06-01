@@ -26,3 +26,4 @@ toml==0.10.2
 urllib3==1.26.4
 whitenoise==5.2.0
 wrapt==1.12.1
+sqlite-orm==0.0.2b0

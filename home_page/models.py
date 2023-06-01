@@ -4,7 +4,7 @@ from django.db import models
 # 3 models are created
 
 class Route(models.Model):
-    route_id = models.AutoField(primary_key=True)  # auto generated
+    route_id = models.TextField(primary_key=True)  # auto generated
     routes = models.TextField()  # place name as text
 
 
@@ -21,3 +21,10 @@ class Map(models.Model):
     map_id = models.AutoField(primary_key=True)  # map id
     bus_id = models.ForeignKey('BusInformation', on_delete=models.CASCADE)  # added foreignKey from BusInformation Table
     way_points = models.TextField()  # waypoint as text
+
+
+class Stops(models.Model):
+    stop_name = models.TextField(primary_key=True)
+    stop_lat = models.FloatField()
+    stop_lon = models.FloatField()
+
