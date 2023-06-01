@@ -1,7 +1,9 @@
 from orm import Model, Database
 from urllib.parse import urlencode
 import requests
+from decouple import config
 
+api_key = config('KEY2')
 
 class home_page_route(Model):
     route_id = str
@@ -11,7 +13,7 @@ class home_page_route(Model):
         self.route_id = route_id
         self.routes = routes
 
-    def __Str__(self):
+    def __str__(self):
         return self.route_id + "<->" + self.routes
 
 
@@ -28,7 +30,7 @@ class home_page_stops(Model):
         stop_name_for_google = self.stop_name + ", Mysore" if "Mysore" not in self.stop_name else self.stop_name
         print(stop_name_for_google)
         endpoint = "https://maps.googleapis.com/maps/api/geocode/json"
-        params = {"address": stop_name_for_google, 'region': '.in', "key": "AIzaSyCsbns--l53kPssGVEYcCzfsfU4m83kaB4", }
+        params = {"address": stop_name_for_google, 'region': '.in', "key": api_key, }
         url_params = urlencode(params)
         url = f"{endpoint}?{url_params}"
         req = requests.get(url)
