@@ -25,7 +25,7 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer) {
         query: document.getElementById("start").value,
       },
       destination: {
-        query: document.getElementById("end").value,
+        query: document.getElementById("end").value + ", Mysore",
       },
       travelMode: google.maps.TravelMode.DRIVING,
     },

@@ -3,6 +3,7 @@ from urllib.parse import urlencode
 import requests
 from decouple import config
 from random import randint
+from json import dumps
 
 api_key = config('KEY2')
 
@@ -49,7 +50,6 @@ class home_page_stops(Model):
 
     def getLatLong(self) -> tuple:
         stop_name_for_google = self.stop_name + ", Mysore" if "Mysore" not in self.stop_name else self.stop_name
-        print(stop_name_for_google)
         endpoint = "https://maps.googleapis.com/maps/api/geocode/json"
         params = {"address": stop_name_for_google, 'region': '.in', "key": api_key, }
         url_params = urlencode(params)
@@ -57,6 +57,23 @@ class home_page_stops(Model):
         req = requests.get(url)
         lat = req.json()['results'][0]['geometry']['location']['lat']
         lng = req.json()['results'][0]['geometry']['location']['lng']
+
+        try:
+            places_endpoint = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
+            params = {
+                "key": api_key,
+                "location": f"{lat},{lng}",
+                "radius": 500,
+                "keyword": "Bus stop"
+            }
+            params_encoded = urlencode(params)
+            places_url = f"{places_endpoint}?{params_encoded}"
+
+            resp = requests.get(places_url)
+            lat = resp.json()["results"][0]["geometry"]["location"]["lat"]
+            lng = resp.json()["results"][0]["geometry"]["location"]["lng"]
+        except Exception as e:
+            print(stop_name_for_google)
         return (lat, lng)
 
 
