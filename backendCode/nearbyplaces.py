@@ -21,7 +21,11 @@ def search_nearby_places(lat, lng):
     params_encoded = urlencode(params)
     places_url = f"{places_endpoint}?{params_encoded}"
 
-    r2 = requests.get(places_url)
+    try:
+        r2 = requests.get(places_url)
+    except requests.exceptions.RequestException as e:
+        print(e)
+        return None
     # with open('test_filenear.json', 'w') as file:
     #     json.dump(r2.json(), file)
     nearby_places_list = []

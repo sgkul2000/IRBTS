@@ -11,15 +11,16 @@ api_key = config('KEY2')
 
 def geocoding_from_address(address):
     endpoint = "https://maps.googleapis.com/maps/api/geocode/json"
-    params = {"address": address, 'region': 'bd', "key": api_key, }
+    params = {"address": address, 'region': '.in', "key": api_key, }
     url_params = urlencode(params)
 
     url = f"{endpoint}?{url_params}"
     req = requests.get(url)
+    print("response: ", req.json())
     formatted_address = req.json()['results'][0]['formatted_address']
     lat = req.json()['results'][0]['geometry']['location']['lat']
     lng = req.json()['results'][0]['geometry']['location']['lng']
-    # print(formatted_address)
+    print(formatted_address)
     # print(lat)
     # print(lng)
     data = {
@@ -27,7 +28,7 @@ def geocoding_from_address(address):
         'lat': lat,
         'lng': lng
     }
-    # print(data)
+    print(data)
     return data
 
 

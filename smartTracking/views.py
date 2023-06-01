@@ -16,6 +16,7 @@ def searchnearby_address(request):
     url = f"https://maps.googleapis.com/maps/api/js?key={text}&callback=initMap&libraries=&v=weekly"
     data = geocoding_from_address(location)
     nearby_list = search_nearby_places(data['lat'], data['lng'])
+    print("nearby list: ", nearby_list)
     data.update({'nearlist': nearby_list})
     data.update({'text': url})
     return render(request, 'smartTracking/searchnearby.html', data)
