@@ -1,4 +1,7 @@
 async function initMap() {
+    
+    var curLocation = null
+    var curStop = null
     const directionsService = new google.maps.DirectionsService();
     const directionsRenderer = new google.maps.DirectionsRenderer();
     const bus_name = document.querySelector("#bus-name").innerHTML;
@@ -11,8 +14,27 @@ async function initMap() {
         zoom: 11,
         center: {lat: 12.2958, lng: 76.6394},
     });
+    
+    const infoWindow = new google.maps.InfoWindow();
+    let socket = new WebSocket(`ws://127.0.0.1:8000/ws/track/${bus_name}/`);
+    
+    socket.onmessage = (e) => {
+        curLocation = JSON.parse(e.data).location;
+        curStop = JSON.parse(e.data).cur_stop;
+        autocomplete(document.getElementById("inputETA"), stops.map((el) => el.stop_name).filter((el, ind) => ind > stops.findIndex((stop) => stop.stop_name === curStop)));
+        infoWindow.setPosition(JSON.parse(e.data).location);
+        infoWindow.setContent("Current Location.");
+        infoWindow.open(map, new google.maps.Marker({
+            map: map,
+            position: JSON.parse(e.data).location,
+            label: "*"
+        }));
+        console.log("Current location set")
+    };
+    
+    // render directions
     directionsRenderer.setMap(map);
-
+    
     directionsService.route(
         {
             origin: {
@@ -38,4 +60,14 @@ async function initMap() {
             }
         }
     );
+
+    document.getElementById("etaBtn").addEventListener("click", async () => {
+        const eta_resp = await fetch('http://localhost:8000/smartTracking/get-eta/', {
+        method: "POST",
+        body: JSON.stringify({"stop": stops.find((el) => el.stop_name === document.getElementById("inputETA").value), "cur_location" :curLocation})
+    })
+    const eta = await eta_resp.json();
+    console.log(eta)
+
+    })
 }

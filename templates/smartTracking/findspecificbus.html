@@ -46,6 +46,43 @@
 
 
     <script src="{% static 'accounts/assets/js/busMap.js' %}"></script>
+    <style>
+        /* search suggestions  */
+        .autocomplete {
+          position: relative;
+          display: inline-block;
+        }
+      
+        .autocomplete-items {
+          position: absolute;
+          border: 1px solid #d4d4d4;
+          border-bottom: none;
+          border-top: none;
+          z-index: 99;
+      
+          top: 100%;
+          left: 0;
+          right: 0;
+        }
+      
+        .autocomplete-items div {
+          padding: 10px;
+          cursor: pointer;
+          background-color: #fff;
+          border-bottom: 1px solid #d4d4d4;
+        }
+      
+        .autocomplete-items div:hover {
+          background-color: #e9e9e9;
+        }
+      
+        .autocomplete-active {
+          background-color: DodgerBlue !important;
+          color: #ffffff;
+        }
+      
+        /* search suggestions  */
+      </style>
 </head>
 
 <body>
@@ -119,6 +156,12 @@
                             </div>
                         </div>
                         <div id="map"></div>
+                        <div class="eta-calculator">
+                            <div class="autocomplete w-50">
+                                <input style="width: 100%;" id="inputETA" type="text" class="form-group pull-left search form-control" placeholder="Get ETA for">
+                            </div>
+                            <button class="btn btn-red" id="etaBtn">Get ETA</button>
+                        </div>
                         <ul>
                             {% for i in stops %}
                                 <li>{{ i }}</li>

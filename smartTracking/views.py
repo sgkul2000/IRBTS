@@ -7,6 +7,7 @@ from backendCode.findBusByDirection import find_distance
 from decouple import config
 from json import loads
 from django.views.decorators.csrf import csrf_exempt
+import requests
 
 # Create your views here.
 
@@ -187,3 +188,43 @@ def getStops(request):
         })
     print(stops)
     return JsonResponse(stops, safe=False)
+
+@csrf_exempt
+def getEta(request):
+    body_unicode = request.body.decode('utf-8')
+    body = loads(body_unicode)
+    etaTo = str(body.get('stop'))
+    curLocation = body.get('cur_location')
+    print(body)
+    endpoint = f"https://routes.googleapis.com/directions/v2:computeRoutes/json"
+    url = f"{endpoint}"
+    req = requests.post(url, {
+        "origin":{
+            "location":{
+            "latLng":{
+                "latitude": curLocation.lat,
+                "longitude": curLocation.long
+            }
+            }
+        },
+        "destination":{
+            "location":{
+            "latLng":{
+                "latitude": etaTo.lat,
+                "longitude": etaTo.long
+            }
+            }
+        },
+        "travelMode": "DRIVE",
+        "routingPreference": "TRAFFIC_AWARE",
+        "departureTime": "2023-10-15T15:01:23.045123456Z",
+        "computeAlternativeRoutes": false,
+        }, headers={
+            "X-Goog-Api-Key": config('KEY2'),
+            "Content-Type": "application/json",
+            "X-Goog-FieldMask": "routes.distanceMeters,routes.duration,routes.polyline.encodedPolyline"
+        })
+    
+    etaResponse = req.json()
+    
+    return JsonResponse(req.json(), safe=False)

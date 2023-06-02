@@ -12,4 +12,5 @@ urlpatterns = [
     path('allbuses/', views.allbuses, name='allbuses'),
     path('driver-portal/', views.driverPortal, name='driverPortal'),
     path('stops/', views.getStops, name='stops'),
+    path('get-eta/', views.getEta, name='getEta'),
 ]
