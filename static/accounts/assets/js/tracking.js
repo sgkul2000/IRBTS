@@ -1,14 +1,11 @@
 window.onload = () => {
-    var stops
 
     const dNameInput = document.getElementById('driverName');
     const dPhoneInput = document.getElementById('driverPhone');
     const bNoInput = document.getElementById('busNo');
     const startBtn = document.getElementById('startBtn')
     startBtn.addEventListener("click", async () => {
-        if (startBtn.innerHTML === "Start") {
-            startBtn.disabled = true
-
+        
         // get location access
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position) => {
@@ -27,7 +24,6 @@ window.onload = () => {
                                 'lat': position.coords.latitude,
                                 'lng': position.coords.longitude,
                             },
-                            'cur_stop': stops.find((el) => document.getElementById('curStop').value === el.stop_name),
                         }));
                     }, 3000)
                 };
@@ -52,22 +48,6 @@ window.onload = () => {
         } else {
             alert("Geolocation is not supported by this browser.");
         }
-    } else {
-        // next
-        driverName.disabled = true;
-        driverPhone.disabled = true;
-        busNo.disabled = true;
-        startBtn.innerHTML = "Start";
-
-        const stops_resp = await fetch('http://localhost:8000/smartTracking/stops/', {
-            method: "POST",
-            body: JSON.stringify({bus_name: bNoInput.value})
-        })
-        stops = await stops_resp.json();
-        console.log(stops)
-
-        autocomplete(document.getElementById("curStop"), stops.map((el) => el.stop_name));
-    }
 
 
     });

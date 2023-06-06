@@ -60,14 +60,21 @@ async function initMap() {
             }
         }
     );
-
+    const format = (n) => {
+        return (~~n).toString().padStart(2, '0')
+    }
     document.getElementById("etaBtn").addEventListener("click", async () => {
         const eta_resp = await fetch('http://localhost:8000/smartTracking/get-eta/', {
         method: "POST",
         body: JSON.stringify({"stop": stops.find((el) => el.stop_name === document.getElementById("inputETA").value), "cur_location" :curLocation})
     })
     const eta = await eta_resp.json();
-    console.log(eta)
+    duration = 
+    seconds = parseInt(eta.routes[0].duration.slice(0,-1))
+    // ':'.join([str(int(s/60/60 % 60)), str(int(s/60 % 60)), str(int(s%60))])
+    document.getElementById("eta-result").innerHTML = "Expected ETA is: "+[format(seconds / 60 / 60),
+    format(seconds / 60 % 60),
+    format(seconds % 60)].join(':')
 
     })
 }

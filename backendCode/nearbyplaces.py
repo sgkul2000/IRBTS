@@ -11,7 +11,17 @@ import math
 
 api_key = config('KEY2')
 
-
+def find_nearby_google(name):
+    stop_name_for_google = name + ", Mysore" if "Mysore" not in name else name
+    endpoint = "https://maps.googleapis.com/maps/api/geocode/json"
+    params = {"address": stop_name_for_google, 'region': '.in', "key": api_key, }
+    url_params = urlencode(params)
+    url = f"{endpoint}?{url_params}"
+    req = requests.get(url)
+    lat = req.json()['results'][0]['geometry']['location']['lat']
+    lng = req.json()['results'][0]['geometry']['location']['lng']
+    nearby = search_nearby_places(lat, lng)
+    return nearby[0] if len(nearby) != 0 else name
 
 def nearby_approximation(lat, long, angle):
     earth_radius = 6371000

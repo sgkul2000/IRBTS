@@ -1,11 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from backendCode.geocoding import reverse_geocoding, geocoding_from_address
-from backendCode.nearbyplaces import search_nearby_places
-from home_page.models import BusInformation, Stops
+from backendCode.nearbyplaces import search_nearby_places, find_nearby_google
+from home_page.models import BusInformation, Stops, Route
 from backendCode.findBusByDirection import find_distance
 from decouple import config
-from json import loads
+from json import loads, dumps
 from django.views.decorators.csrf import csrf_exempt
 import requests
 
@@ -28,7 +28,7 @@ def searchnearby_latlng(request):
     location = str(request.POST['userLocation'])
     lat, lng = location.split(sep=',', maxsplit=1)
     formatted_address = reverse_geocoding(location)
-    nearby_list = search_nearby_places(lat=lat, lng=lng)
+    nearby_list = search_nearby_places(float(lat), float(lng))
     text = config('KEY2')
     url = f"https://maps.googleapis.com/maps/api/js?key={text}&callback=initMap&libraries=&v=weekly"
     data = {
@@ -45,14 +45,19 @@ def finddirection(request):
     bus_list = []
     start = str(request.POST['from'])
     end = str(request.POST['to'])
+    start = find_nearby_google(start)
+    end = find_nearby_google(end)
     try:
-        buses = BusInformation.objects.filter(bus_viaroad__iregex=start).filter(bus_viaroad__iregex=end)
-        for bus in buses:
-            bus_id = bus.bus_id
-            bus_id = "bus" + str(bus_id)
-            bus_name = bus.bus_name
-            bus_raw_route = bus.route_id.routes
-            bus_raw_route = bus_raw_route.split(sep=',')
+        routes = Route.objects.all()
+        route_containing_stops = []
+        for route in routes:
+            route_stops = route.routes.split(sep=',')
+            if start in route_stops and end in route_stops:
+                route_containing_stops.append(route)
+        bus_list = []
+        for route in route_containing_stops:
+            bus = BusInformation.objects.get(route_id_id=route.route_id)
+            bus_raw_route = route.routes.split(sep=',')
             for i in range(0, len(bus_raw_route)):
                 if start.lower() == bus_raw_route[i].lower():
                     start_index = i
@@ -79,14 +84,13 @@ def finddirection(request):
                     temp = (bus_route[i], bus_route[i + 1])
                 list_route.append(temp)
             data = {
-                'bus_id': bus_id,
-                'bus_name': bus_name,
+                'bus_id': bus.bus_id,
+                'bus_name': bus.bus_name,
                 'bus_route': list_route,
                 'distance': distance
             }
             bus_list.append(data)
             length = len(bus_list)
-            # print(bus_list)
         contex = {
             'From': start,
             'To': end,
@@ -193,38 +197,40 @@ def getStops(request):
 def getEta(request):
     body_unicode = request.body.decode('utf-8')
     body = loads(body_unicode)
-    etaTo = str(body.get('stop'))
+    etaTo = body.get('stop')
     curLocation = body.get('cur_location')
     print(body)
-    endpoint = f"https://routes.googleapis.com/directions/v2:computeRoutes/json"
+    endpoint = f"https://routes.googleapis.com/directions/v2:computeRoutes"
     url = f"{endpoint}"
-    req = requests.post(url, {
+    req = requests.post(url, json={
         "origin":{
             "location":{
-            "latLng":{
-                "latitude": curLocation.lat,
-                "longitude": curLocation.long
-            }
+                "latLng":{
+                    "latitude": curLocation['lat'],
+                    "longitude": curLocation['lng']
+                }
             }
         },
         "destination":{
             "location":{
             "latLng":{
-                "latitude": etaTo.lat,
-                "longitude": etaTo.long
+                "latitude": etaTo['lat'],
+                "longitude": etaTo['long']
             }
             }
         },
         "travelMode": "DRIVE",
         "routingPreference": "TRAFFIC_AWARE",
         "departureTime": "2023-10-15T15:01:23.045123456Z",
-        "computeAlternativeRoutes": false,
+        "computeAlternativeRoutes": False,
         }, headers={
             "X-Goog-Api-Key": config('KEY2'),
             "Content-Type": "application/json",
             "X-Goog-FieldMask": "routes.distanceMeters,routes.duration,routes.polyline.encodedPolyline"
         })
     
+    print(req)
     etaResponse = req.json()
+    print(etaResponse)
     
     return JsonResponse(req.json(), safe=False)

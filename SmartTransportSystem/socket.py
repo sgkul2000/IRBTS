@@ -30,7 +30,6 @@ class TrackingConsumer(AsyncWebsocketConsumer):
                     "type": "server_forward",
                     "busNo": self.bus_no,
                     "location": message,
-                    "cur_stop": text_data_json["cur_stop"],
                     "sender_channel_name": self.channel_name,
                 },)
         else:
@@ -44,7 +43,6 @@ class TrackingConsumer(AsyncWebsocketConsumer):
                     {
                         "busNo": event["busNo"],
                         "location": event["location"],
-                        "cur_stop": event["cur_stop"]
                     }
                 )
             )

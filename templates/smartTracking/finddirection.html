@@ -221,10 +221,16 @@
         <div class="row">
           {% for data in bus_list %}
           <div class="col-lg-3 col-md-4 col-6 mt-4" data-toggle="modal" data-target="#{{ data.bus_id }}">
-            <div class="icon-box">
-              <i class="ri-bus-fill" style="color: #ffbb2c;"></i>
-              <h3>{{ data.bus_name }}</h3>
-            </div>
+            <form action="{% url 'findspecificbus' %}" method="post">
+              {% csrf_token %}
+              <input style="display: none;" type="text" name="bus_name" value="{{ data.bus_name }}" id="">
+              <button type="submit">
+                <div class="icon-box">
+                  <i class="ri-bus-fill" style="color: #ffbb2c;"></i>
+                  <h3>{{ data.bus_name }}</h3>
+                </div>
+              </button>
+            </form>
           </div>
           {% endfor %}
         </div>
